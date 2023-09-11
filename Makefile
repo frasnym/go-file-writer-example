@@ -19,20 +19,20 @@ sequential_writing_benchmark:
 	go test ./file_writer/sequential_writing -bench=. > ./file_writer/sequential_writing/benchmark_results.txt
 
 # ==============================================================================
-# Asynchronous I/O
-## example: make asynchronous_io TOTAL=10000000 FILE_NAME=tenmillion.txt
-.PHONY: asynchronous_io asynchronous_io_benchmark
+# Parallel Processing
+## example: make parallel_processing TOTAL=10000000 FILE_NAME=tenmillion.txt
+.PHONY: parallel_processing parallel_processing_benchmark
 
-asynchronous_io:
+parallel_processing:
 	@if [ -z "$(TOTAL)" ]; then echo >&2 "Please set TOTAL via the variable TOTAL"; exit 2; fi
 	@if [ -z "$(FILE_NAME)" ]; then echo >&2 "Please set FILE_NAME via the variable FILE_NAME"; exit 2; fi
 	rm -f "${SAMPLE_DATA_FOLDER}/${FILE_NAME}"
 	echo "Generating file ${SAMPLE_DATA_FOLDER}/${FILE_NAME}..."
-	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/asynchronous_io_${FILE_NAME}" --method=asynchronous_io
+	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/parallel_processing_${FILE_NAME}" --method=parallel_processing
 	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
 
-asynchronous_io_benchmark:
-	go test ./file_writer/asynchronous_io -bench=. > ./file_writer/asynchronous_io/benchmark_results.txt
+parallel_processing_benchmark:
+	go test ./file_writer/parallel_processing -bench=. > ./file_writer/parallel_processing/benchmark_results.txt
 
 # ==============================================================================
 # Tests

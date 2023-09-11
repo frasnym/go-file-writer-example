@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
-	asynchronousio "github.com/frasnym/go-file-writer-example/file_writer/asynchronous_io"
+	parallelprocessing "github.com/frasnym/go-file-writer-example/file_writer/parallel_processing"
 	sequentialwriting "github.com/frasnym/go-file-writer-example/file_writer/sequential_writing"
 )
 
@@ -25,8 +25,8 @@ func main() {
 	flag.Parse()
 
 	mapFileWriterMethod := map[string]func(totalLines int, filename string, fileWriter filewriter.FileWriter) error{
-		"asynchronous_io":    fileWriterAsynchronousIO,
-		"sequential_writing": fileWriterSequentialWriting,
+		"parallel_processing": fileWriterParallelProcessing,
+		"sequential_writing":  fileWriterSequentialWriting,
 	}
 
 	processor := mapFileWriterMethod[method]
@@ -45,8 +45,8 @@ func main() {
 	fmt.Println("File written successfully.")
 }
 
-func fileWriterAsynchronousIO(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
-	fw := asynchronousio.NewAsynchronousIOFileWriter(totalLines, filename, fileWriter)
+func fileWriterParallelProcessing(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
+	fw := parallelprocessing.NewParallelProcessingFileWriter(totalLines, filename, fileWriter)
 	return fw.Write()
 }
 
