@@ -19,6 +19,22 @@ sequential_writing_benchmark:
 	cd sequential_writing && go test -bench=. .
 
 # ==============================================================================
+# Asynchronous I/O
+## example: make asynchronous_io TOTAL=10000000 FILE_NAME=tenmillion.txt
+.PHONY: asynchronous_io asynchronous_io_benchmark
+
+asynchronous_io:
+	@if [ -z "$(TOTAL)" ]; then echo >&2 "Please set TOTAL via the variable TOTAL"; exit 2; fi
+	@if [ -z "$(FILE_NAME)" ]; then echo >&2 "Please set FILE_NAME via the variable FILE_NAME"; exit 2; fi
+	rm -f "${SAMPLE_DATA_FOLDER}/${FILE_NAME}"
+	echo "Generating file ${SAMPLE_DATA_FOLDER}/${FILE_NAME}..."
+	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/asynchronous_io_${FILE_NAME}" --method=asynchronous_io
+	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
+
+asynchronous_io_benchmark:
+	go test ./file_writer/asynchronous_io -bench=. > ./file_writer/asynchronous_io/benchmark_results.txt
+
+# ==============================================================================
 # Tests
 
 .PHONY: test
