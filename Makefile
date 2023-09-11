@@ -4,35 +4,35 @@ SAMPLE_DATA_FOLDER=output
 
 # ==============================================================================
 # Sequential Writing
-## example: make sequential_writing TOTAL=10000000 FILE_NAME=tenmillion.txt
-.PHONY: sequential_writing sequential_writing_benchmark
+## example: make sequential TOTAL=10000000 FILE_NAME=tenmillion.txt
+.PHONY: sequential sequential_benchmark
 
-sequential_writing:
+sequential:
 	@if [ -z "$(TOTAL)" ]; then echo >&2 "Please set TOTAL via the variable TOTAL"; exit 2; fi
 	@if [ -z "$(FILE_NAME)" ]; then echo >&2 "Please set FILE_NAME via the variable FILE_NAME"; exit 2; fi
 	rm -f "${SAMPLE_DATA_FOLDER}/${FILE_NAME}"
 	echo "Generating file ${SAMPLE_DATA_FOLDER}/${FILE_NAME}..."
-	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/sequential_writing_${FILE_NAME}" --method=sequential_writing
+	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/sequential_${FILE_NAME}" --method=sequential
 	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
 
-sequential_writing_benchmark:
-	go test ./file_writer/sequential_writing -bench=. > ./file_writer/sequential_writing/benchmark_results.txt
+sequential_benchmark:
+	go test ./file_writer/sequential -bench=. > ./file_writer/sequential/benchmark_results.txt
 
 # ==============================================================================
 # Parallel Processing
-## example: make parallel_processing TOTAL=10000000 FILE_NAME=tenmillion.txt
-.PHONY: parallel_processing parallel_processing_benchmark
+## example: make parallel TOTAL=10000000 FILE_NAME=tenmillion.txt
+.PHONY: parallel parallel_benchmark
 
-parallel_processing:
+parallel:
 	@if [ -z "$(TOTAL)" ]; then echo >&2 "Please set TOTAL via the variable TOTAL"; exit 2; fi
 	@if [ -z "$(FILE_NAME)" ]; then echo >&2 "Please set FILE_NAME via the variable FILE_NAME"; exit 2; fi
 	rm -f "${SAMPLE_DATA_FOLDER}/${FILE_NAME}"
 	echo "Generating file ${SAMPLE_DATA_FOLDER}/${FILE_NAME}..."
-	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/parallel_processing_${FILE_NAME}" --method=parallel_processing
+	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/parallel_${FILE_NAME}" --method=parallel
 	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
 
-parallel_processing_benchmark:
-	go test ./file_writer/parallel_processing -bench=. > ./file_writer/parallel_processing/benchmark_results.txt
+parallel_benchmark:
+	go test ./file_writer/parallel -bench=. > ./file_writer/parallel/benchmark_results.txt
 
 # ==============================================================================
 # Tests

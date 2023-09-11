@@ -1,4 +1,4 @@
-package sequentialwriting
+package sequential
 
 import (
 	"fmt"
@@ -6,21 +6,21 @@ import (
 	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
 )
 
-type SequentialWritingFileWriter struct {
+type SequentialFileWriter struct {
 	fileWriter filewriter.FileWriter
 	filename   string
 	totalLines int
 }
 
-func NewSequentialWritingFileWriter(totalLines int, filename string, fileWriter filewriter.FileWriter) *SequentialWritingFileWriter {
-	return &SequentialWritingFileWriter{
+func NewSequentialFileWriter(totalLines int, filename string, fileWriter filewriter.FileWriter) *SequentialFileWriter {
+	return &SequentialFileWriter{
 		totalLines: totalLines,
 		filename:   filename,
 		fileWriter: fileWriter,
 	}
 }
 
-func (w *SequentialWritingFileWriter) Write() (err error) {
+func (w *SequentialFileWriter) Write() (err error) {
 	// Create the output file
 	file, err := w.fileWriter.CreateFile(w.filename)
 	if err != nil {

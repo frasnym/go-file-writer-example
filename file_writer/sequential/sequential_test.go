@@ -1,4 +1,4 @@
-package sequentialwriting
+package sequential
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ func BenchmarkWriteToFileExecutionTime(b *testing.B) {
 		b.Run(fmt.Sprintf("Lines-%d", lines), func(b *testing.B) {
 			// Create a FileWriter and an AsynchronousIOFileWriter for each benchmark iteration.
 			fileWriter := filewriter.NewFileWriter()
-			fw := NewSequentialWritingFileWriter(lines, tmpDir+"/benchmark.txt", fileWriter)
+			fw := NewSequentialFileWriter(lines, tmpDir+"/benchmark.txt", fileWriter)
 
 			// Reset the timer for each benchmark iteration.
 			b.ResetTimer()

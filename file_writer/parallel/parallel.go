@@ -1,4 +1,4 @@
-package parallelprocessing
+package parallel
 
 import (
 	"fmt"
@@ -9,18 +9,18 @@ import (
 	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
 )
 
-type ParallelProcessingFileWriter struct {
+type ParallelFileWriter struct {
 	fileWriter    filewriter.FileWriter
 	filename      string
 	totalLines    int
 	maxGoRoutines int
 }
 
-func NewParallelProcessingFileWriter(totalLines int, filename string, fileWriter filewriter.FileWriter) *ParallelProcessingFileWriter {
+func NewParallelFileWriter(totalLines int, filename string, fileWriter filewriter.FileWriter) *ParallelFileWriter {
 	// Get the number of available CPU cores
 	maxGoRoutines := runtime.GOMAXPROCS(0)
 
-	return &ParallelProcessingFileWriter{
+	return &ParallelFileWriter{
 		totalLines:    totalLines,
 		filename:      filename,
 		fileWriter:    fileWriter,
@@ -28,7 +28,7 @@ func NewParallelProcessingFileWriter(totalLines int, filename string, fileWriter
 	}
 }
 
-func (w *ParallelProcessingFileWriter) Write() error {
+func (w *ParallelFileWriter) Write() error {
 	// Create the output file
 	file, err := w.fileWriter.CreateFile(w.filename)
 	if err != nil {
@@ -63,7 +63,7 @@ func (w *ParallelProcessingFileWriter) Write() error {
 	return nil
 }
 
-func (w *ParallelProcessingFileWriter) worker(id int, file *os.File, wg *sync.WaitGroup, linesPerTask int, errCh chan error) {
+func (w *ParallelFileWriter) worker(id int, file *os.File, wg *sync.WaitGroup, linesPerTask int, errCh chan error) {
 	defer wg.Done()
 	startLine := id * linesPerTask
 	endLine := startLine + linesPerTask

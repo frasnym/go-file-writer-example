@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
-	parallelprocessing "github.com/frasnym/go-file-writer-example/file_writer/parallel_processing"
-	sequentialwriting "github.com/frasnym/go-file-writer-example/file_writer/sequential_writing"
+	"github.com/frasnym/go-file-writer-example/file_writer/parallel"
+	"github.com/frasnym/go-file-writer-example/file_writer/sequential"
 )
 
 func main() {
@@ -25,8 +25,8 @@ func main() {
 	flag.Parse()
 
 	mapFileWriterMethod := map[string]func(totalLines int, filename string, fileWriter filewriter.FileWriter) error{
-		"parallel_processing": fileWriterParallelProcessing,
-		"sequential_writing":  fileWriterSequentialWriting,
+		"parallel":   fileWriterParallel,
+		"sequential": fileWriterSequential,
 	}
 
 	processor := mapFileWriterMethod[method]
@@ -45,12 +45,12 @@ func main() {
 	fmt.Println("File written successfully.")
 }
 
-func fileWriterParallelProcessing(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
-	fw := parallelprocessing.NewParallelProcessingFileWriter(totalLines, filename, fileWriter)
+func fileWriterParallel(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
+	fw := parallel.NewParallelFileWriter(totalLines, filename, fileWriter)
 	return fw.Write()
 }
 
-func fileWriterSequentialWriting(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
-	fw := sequentialwriting.NewSequentialWritingFileWriter(totalLines, filename, fileWriter)
+func fileWriterSequential(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
+	fw := sequential.NewSequentialFileWriter(totalLines, filename, fileWriter)
 	return fw.Write()
 }
