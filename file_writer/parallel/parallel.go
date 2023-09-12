@@ -68,13 +68,16 @@ func (w *ParallelFileWriter) worker(id int, file *os.File, wg *sync.WaitGroup, l
 	startLine := id * linesPerTask
 	endLine := startLine + linesPerTask
 
+	writer := w.fileWriter.NewBufferedWriter(file)
 	for i := startLine; i < endLine; i++ {
 		data := fmt.Sprintf("This is a line of data %d.\n", i)
 
-		_, err := file.WriteString(data)
+		_, err := w.fileWriter.BufferedWriteString(writer, data)
 		if err != nil {
 			errCh <- err
 			return
 		}
 	}
+
+	w.fileWriter.BufferedFlush(writer)
 }
