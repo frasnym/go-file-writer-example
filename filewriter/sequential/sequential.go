@@ -3,40 +3,44 @@ package sequential
 import (
 	"fmt"
 
-	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"github.com/frasnym/go-file-writer-example/filewriter"
 )
 
+// SequentialFileWriter represents a writer for sequential file operations.
 type SequentialFileWriter struct {
 	fileWriter filewriter.FileWriter
-	filename   string
-	totalLines int
 }
 
-func NewSequentialFileWriter(totalLines int, filename string, fileWriter filewriter.FileWriter) *SequentialFileWriter {
+// NewSequentialFileWriter creates a new instance of SequentialFileWriter.
+func NewSequentialFileWriter(fileWriter filewriter.FileWriter) *SequentialFileWriter {
 	return &SequentialFileWriter{
-		totalLines: totalLines,
-		filename:   filename,
 		fileWriter: fileWriter,
 	}
 }
 
-func (w *SequentialFileWriter) Write() (err error) {
+// Write writes the specified number of lines to the file sequentially.
+func (w *SequentialFileWriter) Write(totalLines int, filename string) error {
 	// Create the output file
-	file, err := w.fileWriter.CreateFile(w.filename)
+	file, err := w.fileWriter.CreateFile(filename)
 	if err != nil {
-		return
+		return err
 	}
 	defer w.fileWriter.FileClose(file)
 
 	writer := w.fileWriter.NewBufferedWriter(file)
-	for i := 0; i < w.totalLines; i++ {
-		_, err = w.fileWriter.BufferedWriteString(writer, fmt.Sprintf("This is a line of data %d.\n", i))
+	for i := 0; i < totalLines; i++ {
+		data := fmt.Sprintf("This is a line of data %d.\n", i)
+		_, err := w.fileWriter.BufferedWriteString(writer, data)
 		if err != nil {
-			return
+			return err
 		}
 	}
 
-	w.fileWriter.BufferedFlush(writer)
+	// Flush the buffer to ensure all data is written to the file.
+	err = w.fileWriter.BufferedFlush(writer)
+	if err != nil {
+		return err
+	}
 
-	return
+	return nil
 }

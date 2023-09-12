@@ -11,14 +11,14 @@ import (
 	"github.com/frasnym/go-file-writer-example/filewriter/sequential"
 )
 
+// For ease in unit test
+var fileWriter = filewriter.NewFileWriter()
+
 func main() {
 	start := time.Now()
 
 	// Parse command-line flags for specifying file writing parameters.
 	lines, filename, method := parseCommandLineFlags()
-
-	// Create a file writer instance.
-	fileWriter := filewriter.NewFileWriter()
 
 	// Get the appropriate file writing processor based on the specified method.
 	processor := getProcessor(method)
@@ -65,8 +65,8 @@ func fileWriterParallel(totalLines int, filename string, fileWriter filewriter.F
 
 // fileWriterSequential implements file writing in sequential mode.
 func fileWriterSequential(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
-	fw := sequential.NewSequentialFileWriter(totalLines, filename, fileWriter)
-	return fw.Write()
+	fw := sequential.NewSequentialFileWriter(fileWriter)
+	return fw.Write(totalLines, filename)
 }
 
 // fileWriterParallelChunk implements file writing in parallel mode with chunking.
