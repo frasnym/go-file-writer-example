@@ -35,6 +35,22 @@ parallel_benchmark:
 	go test ./file_writer/parallel -bench=. > ./file_writer/parallel/benchmark_results.txt
 
 # ==============================================================================
+# File Chunking and Parallel Writing
+## example: make parallelchunk TOTAL=10000000 FILE_NAME=tenmillion.txt
+.PHONY: parallelchunk parallelchunk_benchmark
+
+parallelchunk:
+	@if [ -z "$(TOTAL)" ]; then echo >&2 "Please set TOTAL via the variable TOTAL"; exit 2; fi
+	@if [ -z "$(FILE_NAME)" ]; then echo >&2 "Please set FILE_NAME via the variable FILE_NAME"; exit 2; fi
+	rm -f "${SAMPLE_DATA_FOLDER}/${FILE_NAME}"
+	echo "Generating file ${SAMPLE_DATA_FOLDER}/${FILE_NAME}..."
+	go run main.go --lines=$(TOTAL) --filename="${SAMPLE_DATA_FOLDER}/parallelchunk_${FILE_NAME}" --method=parallelchunk
+	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
+
+parallelchunk_benchmark:
+	go test ./file_writer/parallelchunk -bench=. > ./file_writer/parallelchunk/benchmark_results.txt
+
+# ==============================================================================
 # Tests
 
 .PHONY: test

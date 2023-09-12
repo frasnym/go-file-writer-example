@@ -28,12 +28,15 @@ func (w *SequentialFileWriter) Write() (err error) {
 	}
 	defer w.fileWriter.FileClose(file)
 
+	writer := w.fileWriter.NewBufferedWriter(file)
 	for i := 0; i < w.totalLines; i++ {
-		_, err = w.fileWriter.FileWriteString(file, fmt.Sprintf("This is a line of data %d.\n", i))
+		_, err = w.fileWriter.BufferedWriteString(writer, fmt.Sprintf("This is a line of data %d.\n", i))
 		if err != nil {
 			return
 		}
 	}
+
+	w.fileWriter.BufferedFlush(writer)
 
 	return
 }

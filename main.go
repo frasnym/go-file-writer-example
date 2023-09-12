@@ -6,6 +6,7 @@ import (
 
 	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
 	"github.com/frasnym/go-file-writer-example/file_writer/parallel"
+	"github.com/frasnym/go-file-writer-example/file_writer/parallelchunk"
 	"github.com/frasnym/go-file-writer-example/file_writer/sequential"
 )
 
@@ -25,8 +26,9 @@ func main() {
 	flag.Parse()
 
 	mapFileWriterMethod := map[string]func(totalLines int, filename string, fileWriter filewriter.FileWriter) error{
-		"parallel":   fileWriterParallel,
-		"sequential": fileWriterSequential,
+		"sequential":    fileWriterSequential,
+		"parallel":      fileWriterParallel,
+		"parallelchunk": fileWriterParallelChunk,
 	}
 
 	processor := mapFileWriterMethod[method]
@@ -52,5 +54,10 @@ func fileWriterParallel(totalLines int, filename string, fileWriter filewriter.F
 
 func fileWriterSequential(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
 	fw := sequential.NewSequentialFileWriter(totalLines, filename, fileWriter)
+	return fw.Write()
+}
+
+func fileWriterParallelChunk(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
+	fw := parallelchunk.NewParallelChunkFileWriter(totalLines, filename, fileWriter)
 	return fw.Write()
 }
