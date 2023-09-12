@@ -3,48 +3,58 @@ package main
 import (
 	"flag"
 	"fmt"
+	"time"
 
-	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"github.com/frasnym/go-file-writer-example/filewriter"
 	"github.com/frasnym/go-file-writer-example/filewriter/parallel"
 	"github.com/frasnym/go-file-writer-example/filewriter/parallelchunk"
 	"github.com/frasnym/go-file-writer-example/filewriter/sequential"
 )
 
 func main() {
-	var (
-		lines    int
-		filename string
-		method   string
-	)
+	start := time.Now()
+	lines, filename, method := parseCommandLineFlags()
 
-	// Define command-line flags
-	flag.IntVar(&lines, "lines", 100, "Total lines")
-	flag.StringVar(&filename, "filename", "output/sequential_writing/one_hundred.txt", "File location")
-	flag.StringVar(&method, "method", "buffered_io", "File writer method")
+	fileWriter := filewriter.NewFileWriter()
+	processor := getProcessor(method)
 
-	// Parse the command-line arguments
-	flag.Parse()
-
-	mapFileWriterMethod := map[string]func(totalLines int, filename string, fileWriter filewriter.FileWriter) error{
-		"sequential":    fileWriterSequential,
-		"parallel":      fileWriterParallel,
-		"parallelchunk": fileWriterParallelChunk,
-	}
-
-	processor := mapFileWriterMethod[method]
 	if processor == nil {
 		fmt.Println("Undefined method")
 		return
 	}
 
-	// Call writeToFile to create and write data to a file
-	fileWriter := filewriter.NewFileWriter()
-	if err := processor(lines, filename, fileWriter); err != nil {
+	if err := processFile(lines, filename, fileWriter, processor); err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
-	fmt.Println("File written successfully.")
+	fmt.Printf("File written successfully, Binomial took %s\n", time.Since(start))
+}
+
+func parseCommandLineFlags() (int, string, string) {
+	var lines int
+	var filename, method string
+
+	flag.IntVar(&lines, "lines", 100, "Total lines")
+	flag.StringVar(&filename, "filename", "output/sequential_writing/one_hundred.txt", "File location")
+	flag.StringVar(&method, "method", "buffered_io", "File writer method")
+	flag.Parse()
+
+	return lines, filename, method
+}
+
+func getProcessor(method string) func(int, string, filewriter.FileWriter) error {
+	mapFileWriterMethod := map[string]func(int, string, filewriter.FileWriter) error{
+		"sequential":    fileWriterSequential,
+		"parallel":      fileWriterParallel,
+		"parallelchunk": fileWriterParallelChunk,
+	}
+
+	return mapFileWriterMethod[method]
+}
+
+func processFile(lines int, filename string, fileWriter filewriter.FileWriter, processor func(int, string, filewriter.FileWriter) error) error {
+	return processor(lines, filename, fileWriter)
 }
 
 func fileWriterParallel(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
