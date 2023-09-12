@@ -20,14 +20,14 @@ func BenchmarkWriteToFileExecutionTime(b *testing.B) {
 		b.Run(fmt.Sprintf("Lines-%d", lines), func(b *testing.B) {
 			// Create a FileWriter and an AsynchronousIOFileWriter for each benchmark iteration.
 			fileWriter := filewriter.NewFileWriter()
-			fw := NewParallelFileWriter(lines, tmpDir+"/benchmark.txt", fileWriter)
+			fw := NewParallelFileWriter(fileWriter)
 
 			// Reset the timer for each benchmark iteration.
 			b.ResetTimer()
 
 			for i := 0; i < b.N; i++ {
 				// Run the file-writing function with the current number of lines.
-				err := fw.Write()
+				err := fw.Write(lines, tmpDir+"/benchmark.txt")
 				if err != nil {
 					b.Fatalf("Error writing to file: %v", err)
 				}

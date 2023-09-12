@@ -11,33 +11,29 @@ import (
 
 type ParallelFileWriter struct {
 	fileWriter    filewriter.FileWriter
-	filename      string
-	totalLines    int
 	maxGoRoutines int
 }
 
-func NewParallelFileWriter(totalLines int, filename string, fileWriter filewriter.FileWriter) *ParallelFileWriter {
+func NewParallelFileWriter(fileWriter filewriter.FileWriter) *ParallelFileWriter {
 	// Get the number of available CPU cores
 	maxGoRoutines := runtime.GOMAXPROCS(0)
 
 	return &ParallelFileWriter{
-		totalLines:    totalLines,
-		filename:      filename,
 		fileWriter:    fileWriter,
 		maxGoRoutines: maxGoRoutines,
 	}
 }
 
-func (w *ParallelFileWriter) Write() error {
+func (w *ParallelFileWriter) Write(totalLines int, filename string) error {
 	// Create the output file
-	file, err := w.fileWriter.CreateFile(w.filename)
+	file, err := w.fileWriter.CreateFile(filename)
 	if err != nil {
 		return err
 	}
 	defer w.fileWriter.FileClose(file)
 
 	// Calculate the number of lines to be written by each worker
-	linesPerTask := w.totalLines / w.maxGoRoutines
+	linesPerTask := totalLines / w.maxGoRoutines
 
 	var wg sync.WaitGroup
 	errCh := make(chan error, w.maxGoRoutines)

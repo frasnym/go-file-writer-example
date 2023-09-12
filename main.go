@@ -59,8 +59,8 @@ func getProcessor(method string) func(int, string, filewriter.FileWriter) error 
 
 // fileWriterParallel implements file writing in parallel mode.
 func fileWriterParallel(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
-	fw := parallel.NewParallelFileWriter(totalLines, filename, fileWriter)
-	return fw.Write()
+	fw := parallel.NewParallelFileWriter(fileWriter)
+	return fw.Write(totalLines, filename)
 }
 
 // fileWriterSequential implements file writing in sequential mode.
