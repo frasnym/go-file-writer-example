@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+//go:generate mockgen -destination mock_filewriter.go -package filewriter github.com/frasnym/go-file-writer-example/filewriter FileWriter
 type FileWriter interface {
 	CreateFile(name string) (*os.File, error)
 	OpenFile(name string, flag int, perm fs.FileMode) (*os.File, error)

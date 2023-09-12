@@ -56,3 +56,8 @@ test:
 ## test-coverage: run unit tests and generate coverage report in html format
 test-coverage:
 	@ go test -coverprofile=coverage.out ./...  && go tool cover -html=coverage.out
+
+.PHONY: mock-gen
+## mock-gen: generate mock using go generate
+mock-gen:
+	go generate ./...
