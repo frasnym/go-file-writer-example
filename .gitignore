@@ -22,3 +22,4 @@ go.work
 
 output/*.txt
 **/benchmark_results.txt
+.DS_Store
