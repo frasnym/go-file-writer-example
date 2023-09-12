@@ -71,6 +71,6 @@ func fileWriterSequential(totalLines int, filename string, fileWriter filewriter
 
 // fileWriterParallelChunk implements file writing in parallel mode with chunking.
 func fileWriterParallelChunk(totalLines int, filename string, fileWriter filewriter.FileWriter) error {
-	fw := parallelchunk.NewParallelChunkFileWriter(totalLines, filename, fileWriter)
-	return fw.Write()
+	fw := parallelchunk.NewParallelChunkFileWriter(fileWriter)
+	return fw.Write(totalLines, filename)
 }

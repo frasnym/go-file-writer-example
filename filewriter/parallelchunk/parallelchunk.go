@@ -6,37 +6,33 @@ import (
 	"runtime"
 	"sync"
 
-	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"github.com/frasnym/go-file-writer-example/filewriter"
 )
 
 type ParallelChunkFileWriter struct {
 	fileWriter    filewriter.FileWriter
-	filename      string
-	totalLines    int
 	maxGoRoutines int
 }
 
-func NewParallelChunkFileWriter(totalLines int, filename string, fileWriter filewriter.FileWriter) *ParallelChunkFileWriter {
+func NewParallelChunkFileWriter(fileWriter filewriter.FileWriter) *ParallelChunkFileWriter {
 	// Get the number of available CPU cores
 	maxGoRoutines := runtime.GOMAXPROCS(0)
 
 	return &ParallelChunkFileWriter{
-		totalLines:    totalLines,
-		filename:      filename,
 		fileWriter:    fileWriter,
 		maxGoRoutines: maxGoRoutines,
 	}
 }
 
-func (w *ParallelChunkFileWriter) Write() error {
+func (w *ParallelChunkFileWriter) Write(totalLines int, filename string) error {
 	// Create the output file
-	file, err := w.fileWriter.CreateFile(w.filename)
+	file, err := w.fileWriter.CreateFile(filename)
 	if err != nil {
 		return err
 	}
 	w.fileWriter.FileClose(file)
 
-	chunkSize := w.totalLines / w.maxGoRoutines
+	chunkSize := totalLines / w.maxGoRoutines
 	var wg sync.WaitGroup
 
 	for i := 0; i < w.maxGoRoutines; i++ {
@@ -44,7 +40,7 @@ func (w *ParallelChunkFileWriter) Write() error {
 		startLine := i * chunkSize
 		endLine := startLine + chunkSize
 
-		go w.writeChunkToFile(startLine, endLine, &wg)
+		go w.writeChunkToFile(startLine, endLine, filename, &wg)
 	}
 
 	wg.Wait()
@@ -52,8 +48,8 @@ func (w *ParallelChunkFileWriter) Write() error {
 	return nil
 }
 
-func (w *ParallelChunkFileWriter) writeChunkToFile(startLine, endLine int, wg *sync.WaitGroup) (err error) {
-	file, err := w.fileWriter.OpenFile(w.filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+func (w *ParallelChunkFileWriter) writeChunkToFile(startLine, endLine int, filename string, wg *sync.WaitGroup) (err error) {
+	file, err := w.fileWriter.OpenFile(filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return
 	}

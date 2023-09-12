@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"go.uber.org/mock/gomock"
 )
 
 func BenchmarkWriteToFileExecutionTime(b *testing.B) {
@@ -20,14 +21,14 @@ func BenchmarkWriteToFileExecutionTime(b *testing.B) {
 		b.Run(fmt.Sprintf("Lines-%d", lines), func(b *testing.B) {
 			// Create a FileWriter and an AsynchronousIOFileWriter for each benchmark iteration.
 			fileWriter := filewriter.NewFileWriter()
-			fw := NewParallelChunkFileWriter(lines, tmpDir+"/benchmark.txt", fileWriter)
+			fw := NewParallelChunkFileWriter(fileWriter)
 
 			// Reset the timer for each benchmark iteration.
 			b.ResetTimer()
 
 			for i := 0; i < b.N; i++ {
 				// Run the file-writing function with the current number of lines.
-				err := fw.Write()
+				err := fw.Write(lines, tmpDir+"/benchmark.txt")
 				if err != nil {
 					b.Fatalf("Error writing to file: %v", err)
 				}
@@ -50,4 +51,29 @@ func createTempDir(b *testing.B) (string, func()) {
 	}
 
 	return tmpDir, cleanup
+}
+
+func TestParallelChunkFileWriter_Write_HappyPath(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Create a mock of the FileWriter interface.
+	mockFileWriter := filewriter.NewMockFileWriter(ctrl)
+
+	// Create a ParallelChunkFileWriter with the mock FileWriter.
+	writer := NewParallelChunkFileWriter(mockFileWriter)
+
+	// Specify the expected parameters and behavior for the FileWriter methods.
+	mockFileWriter.EXPECT().CreateFile(gomock.Any()).Return(nil, nil)
+	mockFileWriter.EXPECT().OpenFile(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil).AnyTimes()
+	mockFileWriter.EXPECT().NewBufferedWriter(gomock.Any()).Return(nil).AnyTimes()
+	mockFileWriter.EXPECT().BufferedWriteString(gomock.Any(), gomock.Any()).Return(0, nil).AnyTimes()
+	mockFileWriter.EXPECT().BufferedFlush(gomock.Any()).Return(nil).AnyTimes()
+	mockFileWriter.EXPECT().FileClose(gomock.Any()).Return(nil).AnyTimes()
+
+	// Call the Write method of ParallelChunkFileWriter with happy path values.
+	err := writer.Write(5, "test.txt")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
 }
