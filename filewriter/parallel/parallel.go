@@ -6,25 +6,25 @@ import (
 	"runtime"
 	"sync"
 
-	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"github.com/frasnym/go-file-writer-example/filewriter"
 )
 
-type ParallelFileWriter struct {
+type parallelFileWriter struct {
 	fileWriter    filewriter.FileWriter
 	maxGoRoutines int
 }
 
-func NewParallelFileWriter(fileWriter filewriter.FileWriter) *ParallelFileWriter {
+func NewParallelFileWriter(fileWriter filewriter.FileWriter) filewriter.Writer {
 	// Get the number of available CPU cores
 	maxGoRoutines := runtime.GOMAXPROCS(0)
 
-	return &ParallelFileWriter{
+	return &parallelFileWriter{
 		fileWriter:    fileWriter,
 		maxGoRoutines: maxGoRoutines,
 	}
 }
 
-func (w *ParallelFileWriter) Write(totalLines int, filename string) error {
+func (w *parallelFileWriter) Write(totalLines int, filename string) error {
 	// Create the output file
 	file, err := w.fileWriter.CreateFile(filename)
 	if err != nil {
@@ -59,7 +59,7 @@ func (w *ParallelFileWriter) Write(totalLines int, filename string) error {
 	return nil
 }
 
-func (w *ParallelFileWriter) worker(id int, file *os.File, wg *sync.WaitGroup, linesPerTask int, errCh chan error) {
+func (w *parallelFileWriter) worker(id int, file *os.File, wg *sync.WaitGroup, linesPerTask int, errCh chan error) {
 	defer wg.Done()
 	startLine := id * linesPerTask
 	endLine := startLine + linesPerTask

@@ -9,22 +9,22 @@ import (
 	"github.com/frasnym/go-file-writer-example/filewriter"
 )
 
-type ParallelChunkFileWriter struct {
+type parallelChunkFileWriter struct {
 	fileWriter    filewriter.FileWriter
 	maxGoRoutines int
 }
 
-func NewParallelChunkFileWriter(fileWriter filewriter.FileWriter) *ParallelChunkFileWriter {
+func NewParallelChunkFileWriter(fileWriter filewriter.FileWriter) filewriter.Writer {
 	// Get the number of available CPU cores
 	maxGoRoutines := runtime.GOMAXPROCS(0)
 
-	return &ParallelChunkFileWriter{
+	return &parallelChunkFileWriter{
 		fileWriter:    fileWriter,
 		maxGoRoutines: maxGoRoutines,
 	}
 }
 
-func (w *ParallelChunkFileWriter) Write(totalLines int, filename string) error {
+func (w *parallelChunkFileWriter) Write(totalLines int, filename string) error {
 	// Create the output file
 	file, err := w.fileWriter.CreateFile(filename)
 	if err != nil {
@@ -48,7 +48,7 @@ func (w *ParallelChunkFileWriter) Write(totalLines int, filename string) error {
 	return nil
 }
 
-func (w *ParallelChunkFileWriter) writeChunkToFile(startLine, endLine int, filename string, wg *sync.WaitGroup) (err error) {
+func (w *parallelChunkFileWriter) writeChunkToFile(startLine, endLine int, filename string, wg *sync.WaitGroup) (err error) {
 	file, err := w.fileWriter.OpenFile(filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return

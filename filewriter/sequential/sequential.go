@@ -7,19 +7,19 @@ import (
 )
 
 // SequentialFileWriter represents a writer for sequential file operations.
-type SequentialFileWriter struct {
+type sequentialFileWriter struct {
 	fileWriter filewriter.FileWriter
 }
 
 // NewSequentialFileWriter creates a new instance of SequentialFileWriter.
-func NewSequentialFileWriter(fileWriter filewriter.FileWriter) *SequentialFileWriter {
-	return &SequentialFileWriter{
+func NewSequentialFileWriter(fileWriter filewriter.FileWriter) filewriter.Writer {
+	return &sequentialFileWriter{
 		fileWriter: fileWriter,
 	}
 }
 
 // Write writes the specified number of lines to the file sequentially.
-func (w *SequentialFileWriter) Write(totalLines int, filename string) error {
+func (w *sequentialFileWriter) Write(totalLines int, filename string) error {
 	// Create the output file
 	file, err := w.fileWriter.CreateFile(filename)
 	if err != nil {

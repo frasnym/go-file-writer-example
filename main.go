@@ -11,9 +11,6 @@ import (
 	"github.com/frasnym/go-file-writer-example/filewriter/sequential"
 )
 
-// For ease in unit test
-var fileWriter = filewriter.NewFileWriter()
-
 func main() {
 	start := time.Now()
 
@@ -28,6 +25,7 @@ func main() {
 	}
 
 	// Process the file writing task using the selected processor.
+	fileWriter := filewriter.NewFileWriter()
 	if err := processor(lines, filename, fileWriter); err != nil {
 		fmt.Println("Error:", err)
 		return
