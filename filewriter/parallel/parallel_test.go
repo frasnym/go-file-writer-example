@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
+	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
 )
 
 func BenchmarkWriteToFileExecutionTime(b *testing.B) {

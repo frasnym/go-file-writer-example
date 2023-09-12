@@ -1,11 +1,11 @@
-package sequential
+package parallelchunk
 
 import (
 	"fmt"
 	"os"
 	"testing"
 
-	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
+	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
 )
 
 func BenchmarkWriteToFileExecutionTime(b *testing.B) {
@@ -20,7 +20,7 @@ func BenchmarkWriteToFileExecutionTime(b *testing.B) {
 		b.Run(fmt.Sprintf("Lines-%d", lines), func(b *testing.B) {
 			// Create a FileWriter and an AsynchronousIOFileWriter for each benchmark iteration.
 			fileWriter := filewriter.NewFileWriter()
-			fw := NewSequentialFileWriter(lines, tmpDir+"/benchmark.txt", fileWriter)
+			fw := NewParallelChunkFileWriter(lines, tmpDir+"/benchmark.txt", fileWriter)
 
 			// Reset the timer for each benchmark iteration.
 			b.ResetTimer()

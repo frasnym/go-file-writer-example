@@ -16,7 +16,7 @@ sequential:
 	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
 
 sequential_benchmark:
-	go test ./file_writer/sequential -bench=. > ./file_writer/sequential/benchmark_results.txt
+	go test ./filewriter/sequential -bench=. > ./filewriter/sequential/benchmark_results.txt
 
 # ==============================================================================
 # Parallel Processing
@@ -32,7 +32,7 @@ parallel:
 	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
 
 parallel_benchmark:
-	go test ./file_writer/parallel -bench=. > ./file_writer/parallel/benchmark_results.txt
+	go test ./filewriter/parallel -bench=. > ./filewriter/parallel/benchmark_results.txt
 
 # ==============================================================================
 # File Chunking and Parallel Writing
@@ -48,7 +48,7 @@ parallelchunk:
 	echo "Finished generate ${SAMPLE_DATA_FOLDER}/${FILE_NAME}."
 
 parallelchunk_benchmark:
-	go test ./file_writer/parallelchunk -bench=. > ./file_writer/parallelchunk/benchmark_results.txt
+	go test ./filewriter/parallelchunk -bench=. > ./filewriter/parallelchunk/benchmark_results.txt
 
 # ==============================================================================
 # Tests

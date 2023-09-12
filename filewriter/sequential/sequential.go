@@ -3,7 +3,7 @@ package sequential
 import (
 	"fmt"
 
-	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
+	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
 )
 
 type SequentialFileWriter struct {

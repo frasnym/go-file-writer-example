@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	filewriter "github.com/frasnym/go-file-writer-example/file_writer"
-	"github.com/frasnym/go-file-writer-example/file_writer/parallel"
-	"github.com/frasnym/go-file-writer-example/file_writer/parallelchunk"
-	"github.com/frasnym/go-file-writer-example/file_writer/sequential"
+	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"github.com/frasnym/go-file-writer-example/filewriter/parallel"
+	"github.com/frasnym/go-file-writer-example/filewriter/parallelchunk"
+	"github.com/frasnym/go-file-writer-example/filewriter/sequential"
 )
 
 func main() {

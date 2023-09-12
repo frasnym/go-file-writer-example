@@ -21,5 +21,4 @@
 go.work
 
 output/*.txt
-file_writer/file_writer.go
 **/benchmark_results.txt
