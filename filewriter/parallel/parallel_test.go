@@ -5,7 +5,8 @@ import (
 	"os"
 	"testing"
 
-	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"github.com/frasnym/go-file-writer-example/filewriter"
+	"go.uber.org/mock/gomock"
 )
 
 func BenchmarkWriteToFileExecutionTime(b *testing.B) {
@@ -50,4 +51,30 @@ func createTempDir(b *testing.B) (string, func()) {
 	}
 
 	return tmpDir, cleanup
+}
+
+func TestParallelFileWriter_Write(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Create a mock for the FileWriter interface
+	mockFileWriter := filewriter.NewMockFileWriter(ctrl)
+
+	// Create an instance of ParallelFileWriter with the mock FileWriter
+	pfw := NewParallelFileWriter(mockFileWriter)
+
+	// Set up expectations for the mock FileWriter
+	totalLines := 100 // Set your desired totalLines and filename
+	filename := "test.txt"
+	mockFileWriter.EXPECT().CreateFile(filename).Return(nil, nil)
+	mockFileWriter.EXPECT().NewBufferedWriter(gomock.Any()).Return(nil).AnyTimes()
+	mockFileWriter.EXPECT().BufferedWriteString(gomock.Any(), gomock.Any()).Return(0, nil).AnyTimes()
+	mockFileWriter.EXPECT().BufferedFlush(gomock.Any()).Return(nil).AnyTimes()
+	mockFileWriter.EXPECT().FileClose(gomock.Any()).Return(nil)
+
+	// Run the Write function
+	err := pfw.Write(totalLines, filename)
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
 }

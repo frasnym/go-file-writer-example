@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	filewriter "github.com/frasnym/go-file-writer-example/filewriter"
+	"github.com/frasnym/go-file-writer-example/filewriter"
 	"go.uber.org/mock/gomock"
 )
 
