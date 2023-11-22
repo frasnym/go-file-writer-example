@@ -33,13 +33,13 @@ Here are the benchmark results for each package:
 
 | Lines       | Operations | Nanoseconds per Operation | Time per Operation |
 |-------------|------------|---------------------------|-------------------|
-| 10          | 10,332     | 131,032 ns/op             | 131.032µs          |
-| 100         | 10,000     | 134,346 ns/op             | 134.346µs          |
-| 1,000       | 6,606      | 194,377 ns/op             | 194.377µs          |
-| 10,000      | 2,287      | 539,779 ns/op             | 539.779µs          |
-| 100,000     | 265        | 4,284,090 ns/op           | 4.284ms            |
-| 1,000,000   | 31         | 37,744,698 ns/op          | 37.745ms           |
-| 10,000,000  | 3          | 452,873,153 ns/op         | 452.873ms          |
+| 10          | 6,066      | 194,561 ns/op             | 194.561µs         |
+| 100         | 6,807      | 201,701 ns/op             | 201.701µs         |
+| 1,000       | 5,788      | 222,166 ns/op             | 222.166µs         |
+| 10,000      | 1,779      | 718,845 ns/op             | 718.845µs         |
+| 100,000     | 247        | 4,280,770 ns/op           | 4.280ms           |
+| 1,000,000   | 24         | 47,067,297 ns/op          | 47.067ms          |
+| 10,000,000  | 4          | 315,281,906 ns/op         | 315.282ms         |
 
 These benchmark results were obtained on a system with the following specifications:
 - Operating System: Darwin
