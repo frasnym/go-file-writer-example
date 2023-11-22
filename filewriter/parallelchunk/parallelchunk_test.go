@@ -64,8 +64,7 @@ func TestParallelChunkFileWriter_Write_HappyPath(t *testing.T) {
 	writer := NewParallelChunkFileWriter(mockFileWriter)
 
 	// Specify the expected parameters and behavior for the FileWriter methods.
-	mockFileWriter.EXPECT().CreateFile(gomock.Any()).Return(nil, nil)
-	mockFileWriter.EXPECT().OpenFile(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil).AnyTimes()
+	mockFileWriter.EXPECT().CreateFile(gomock.Any()).Return(nil, nil).AnyTimes()
 	mockFileWriter.EXPECT().NewBufferedWriter(gomock.Any()).Return(nil).AnyTimes()
 	mockFileWriter.EXPECT().BufferedWriteString(gomock.Any(), gomock.Any()).Return(0, nil).AnyTimes()
 	mockFileWriter.EXPECT().BufferedFlush(gomock.Any()).Return(nil).AnyTimes()

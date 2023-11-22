@@ -2,7 +2,6 @@ package parallelchunk
 
 import (
 	"fmt"
-	"os"
 	"runtime"
 	"sync"
 
@@ -25,13 +24,6 @@ func NewParallelChunkFileWriter(fileWriter filewriter.FileWriter) filewriter.Wri
 }
 
 func (w *parallelChunkFileWriter) Write(totalLines int, filename string) error {
-	// Create the output file
-	file, err := w.fileWriter.CreateFile(filename)
-	if err != nil {
-		return err
-	}
-	w.fileWriter.FileClose(file)
-
 	chunkSize := totalLines / w.maxGoRoutines
 	var wg sync.WaitGroup
 
@@ -49,9 +41,9 @@ func (w *parallelChunkFileWriter) Write(totalLines int, filename string) error {
 }
 
 func (w *parallelChunkFileWriter) writeChunkToFile(startLine, endLine int, filename string, wg *sync.WaitGroup) (err error) {
-	file, err := w.fileWriter.OpenFile(filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	file, err := w.fileWriter.CreateFile(fmt.Sprint(filename, "_", startLine))
 	if err != nil {
-		return
+		return err
 	}
 	defer w.fileWriter.FileClose(file)
 

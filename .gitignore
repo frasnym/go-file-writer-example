@@ -20,6 +20,6 @@
 # Go workspace file
 go.work
 
-output/*.txt
+output/**txt**
 **/benchmark_results.txt
 .DS_Store
